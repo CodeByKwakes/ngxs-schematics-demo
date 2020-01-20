@@ -1,9 +1,20 @@
-import { chain, externalSchematic, Rule } from '@angular-devkit/schematics';
+import {
+  apply,
+  chain,
+  mergeWith,
+  move,
+  Rule,
+  SchematicContext,
+  Tree,
+  url
+} from '@angular-devkit/schematics';
 
-export default function(schema: any): Rule {
-  return chain([
-    externalSchematic('@nrwl/workspace', 'lib', {
-      name: schema.name
-    })
-  ]);
+export default function(): Rule {
+  return (host: Tree, context: SchematicContext) => {
+    context.logger.debug('----- Monorepo Setup ------');
+    return chain([mergeWith(apply(url('./files'), [move(host.root.path)]))])(
+      host,
+      context
+    );
+  };
 }

@@ -1,0 +1,15 @@
+{
+  "packages": ["apps/**", "libs/**"],
+  "version": "independent",
+  "command": {
+    "publish": {
+      "conventionalCommits": true
+    },
+    "version": {
+      "message": "chore(release): 🔖 version %s",
+      "conventionalCommits": true,
+      "allowBranch": ["master", "develop"],
+      "yes": true
+    }
+  }
+}
