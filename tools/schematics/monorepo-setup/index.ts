@@ -1,13 +1,4 @@
-import {
-  apply,
-  chain,
-  mergeWith,
-  move,
-  Rule,
-  SchematicContext,
-  Tree,
-  url
-} from '@angular-devkit/schematics';
+import { apply, chain, mergeWith, move, Rule, SchematicContext, Tree, url } from '@angular-devkit/schematics';
 import { addDepsToPackageJson, updateJsonInTree } from '@nrwl/workspace';
 
 export default function(): Rule {
@@ -38,12 +29,14 @@ function updatePackageJson(): Rule {
   return updateJsonInTree('package.json', json => {
     const packageJson = {
       ...json,
-      workspaces: ['apps/**', 'libs/**'],
       scripts: {
+        '------Nx SCRIPTS ----------------': '',
         ...json.scripts,
+        '------Nx SCRIPTS END-------------': '',
         '----- WORKSPACE SCRIPTS ---------': '',
-        release: 'lerna version',
         commit: 'git-cz',
+        release: 'lerna version',
+        precommit: 'git add . ',
         '----- WORKSPACE SCRIPTS END -----': ''
       },
       config: {
@@ -58,10 +51,7 @@ function updatePackageJson(): Rule {
         }
       },
       'lint-staged': {
-        '*.{js,json,css,scss,less,md,ts,html,component.html}': [
-          'prettier --write',
-          'git add'
-        ]
+        '*.{js,json,css,scss,less,md,ts,html,component.html}': ['prettier --write', 'git add']
       }
     };
 
