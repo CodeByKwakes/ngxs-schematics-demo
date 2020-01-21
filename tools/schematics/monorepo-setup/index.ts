@@ -17,7 +17,7 @@ export default function(): Rule {
     const devDependencies = {
       '@commitlint/cli': '^8.2.0',
       '@commitlint/config-conventional': '^8.2.0',
-      '@commitlint/prompt': '*',
+      '@commitlint/prompt': '^8.3.5',
       commitizen: '^4.0.3',
       'cz-conventional-changelog': '^3.0.2',
       husky: '^3.0.9',
@@ -34,37 +34,41 @@ export default function(): Rule {
   };
 }
 
-function updatePackageJson() {
+function updatePackageJson(): Rule {
   return updateJsonInTree('package.json', json => {
-    json.scripts = {
-      ...json.scripts,
-      '----- WORKSPACE SCRIPTS ---------': '',
-      release: 'lerna version',
-      commit: 'git-cz',
-      '----- WORKSPACE SCRIPTS END -----': ''
-    };
-    json.config = {
-      commitizen: {
-        path: './node_modules/cz-conventional-changelog'
+    const packageJson = {
+      ...json,
+      scripts: {
+        ...json.scripts,
+        '----- WORKSPACE SCRIPTS ---------': '',
+        release: 'lerna version',
+        commit: 'git-cz',
+        '----- WORKSPACE SCRIPTS END -----': ''
+      },
+      config: {
+        commitizen: {
+          path: './node_modules/cz-conventional-changelog'
+        }
+      },
+      husky: {
+        hooks: {
+          'commit-msg': 'commitlint -E HUSKY_GIT_PARAMS',
+          'pre-commit': 'lint-staged'
+        }
+      },
+      'lint-staged': {
+        '*.{js,json,css,scss,less,md,ts,html,component.html}': [
+          'prettier --write',
+          'git add'
+        ]
       }
     };
-    json.husky = {
-      hooks: {
-        'commit-msg': 'commitlint -E HUSKY_GIT_PARAMS',
-        'pre-commit': 'lint-staged'
-      }
-    };
-    json['lint-staged'] = {
-      '*.{js,json,css,scss,less,md,ts,html,component.html}': [
-        'prettier --write',
-        'git add'
-      ]
-    };
-    return json;
+
+    return packageJson;
   });
 }
 
-function updatePrettierrc() {
+function updatePrettierrc(): Rule {
   return updateJsonInTree('.prettierrc', json => {
     const prettierJson = {
       printWidth: 120,
