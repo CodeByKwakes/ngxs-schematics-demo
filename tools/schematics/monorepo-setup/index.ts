@@ -9,6 +9,7 @@ import {
   url
 } from '@angular-devkit/schematics';
 import { addDepsToPackageJson, updateJsonInTree } from '@nrwl/workspace';
+
 export default function(): Rule {
   return (host: Tree, context: SchematicContext) => {
     context.logger.debug('----- Monorepo Setup ------');
@@ -26,39 +27,50 @@ export default function(): Rule {
     const shouldRunInstallTask = true;
     return chain([
       addDepsToPackageJson(dependencies, devDependencies, shouldRunInstallTask),
-      updateJsonInTree('package.json', json => {
-        json.scripts = {
-          ...json.scripts,
-          '----- WORKSPACE SCRIPTS ---------': '',
-          release: 'lerna version',
-          commit: 'git-cz',
-          '----- WORKSPACE SCRIPTS END -----': ''
-        };
-        // json.scripts['----- SCRIPTS ---------'] = '';
-        // json.scripts.release = 'lerna version';
-        // json.scripts.commit = 'git-cz';
-        // json.scripts['----- SCRIPTS END -----'] = '';
-
-        json.config = {
-          commitizen: {
-            path: './node_modules/cz-conventional-changelog'
-          }
-        };
-        json.husky = {
-          hooks: {
-            'commit-msg': 'commitlint -E HUSKY_GIT_PARAMS',
-            'pre-commit': 'lint-staged'
-          }
-        };
-        json['lint-staged'] = {
-          '*.{js,json,css,scss,less,md,ts,html,component.html}': [
-            'prettier --write',
-            'git add'
-          ]
-        };
-        return json;
-      }),
+      updatePackageJson(),
+      updatePrettierrc(),
       mergeWith(apply(url('./files'), [move(host.root.path)]))
     ])(host, context);
   };
+}
+
+function updatePackageJson() {
+  return updateJsonInTree('package.json', json => {
+    json.scripts = {
+      ...json.scripts,
+      '----- WORKSPACE SCRIPTS ---------': '',
+      release: 'lerna version',
+      commit: 'git-cz',
+      '----- WORKSPACE SCRIPTS END -----': ''
+    };
+    json.config = {
+      commitizen: {
+        path: './node_modules/cz-conventional-changelog'
+      }
+    };
+    json.husky = {
+      hooks: {
+        'commit-msg': 'commitlint -E HUSKY_GIT_PARAMS',
+        'pre-commit': 'lint-staged'
+      }
+    };
+    json['lint-staged'] = {
+      '*.{js,json,css,scss,less,md,ts,html,component.html}': [
+        'prettier --write',
+        'git add'
+      ]
+    };
+    return json;
+  });
+}
+
+function updatePrettierrc() {
+  return updateJsonInTree('.prettierrc', json => {
+    const prettierJson = {
+      printWidth: 120,
+      ...json,
+      tabWidth: 2
+    };
+    return prettierJson;
+  });
 }
