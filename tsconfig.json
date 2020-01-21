@@ -15,7 +15,9 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@nx-schematics-demo/data-access-user": ["libs/data-access-user/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

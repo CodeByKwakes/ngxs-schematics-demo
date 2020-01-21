@@ -1,6 +1,42 @@
 {
   "version": 1,
-  "projects": {},
+  "projects": {
+    "data-access-user": {
+      "projectType": "library",
+      "root": "libs/data-access-user",
+      "sourceRoot": "libs/data-access-user/src",
+      "prefix": "nx-schematics-demo",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "libs/data-access-user/tsconfig.lib.json",
+            "project": "libs/data-access-user/ng-package.json"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["libs/data-access-user/tsconfig.lib.json", "libs/data-access-user/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**", "!libs/data-access-user/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/data-access-user/jest.config.js",
+            "tsConfig": "libs/data-access-user/tsconfig.spec.json",
+            "setupFile": "libs/data-access-user/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {
+        "@nrwl/angular:component": {
+          "styleext": "scss"
+        }
+      }
+    }
+  },
   "cli": {
     "defaultCollection": "@nrwl/angular",
     "packageManager": "yarn"
@@ -13,5 +49,6 @@
     "@nrwl/angular:library": {
       "unitTestRunner": "jest"
     }
-  }
+  },
+  "defaultProject": "data-access-user"
 }
