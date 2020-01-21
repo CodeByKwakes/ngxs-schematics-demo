@@ -2,7 +2,6 @@
   "packages": ["apps/**", "libs/**"],
   "npmClient": "yarn",
   "version": "independent",
-  "useWorkspaces": true,
   "command": {
     "publish": {
       "conventionalCommits": true
