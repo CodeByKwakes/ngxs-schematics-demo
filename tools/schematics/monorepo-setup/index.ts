@@ -38,6 +38,7 @@ function updatePackageJson(): Rule {
   return updateJsonInTree('package.json', json => {
     const packageJson = {
       ...json,
+      workspaces: ['apps/**', 'libs/**'],
       scripts: {
         ...json.scripts,
         '----- WORKSPACE SCRIPTS ---------': '',
