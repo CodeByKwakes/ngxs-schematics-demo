@@ -1,0 +1,17 @@
+{
+  "packages": ["apps/**", "libs/**"],
+  "npmClient": "yarn",
+  "version": "independent",
+  "useWorkspaces": true,
+  "command": {
+    "publish": {
+      "conventionalCommits": true
+    },
+    "version": {
+      "message": "chore(release): 🔖 version %s",
+      "conventionalCommits": true,
+      "allowBranch": ["master", "develop"],
+      "yes": true
+    }
+  }
+}
